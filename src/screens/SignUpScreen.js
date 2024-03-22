@@ -49,17 +49,16 @@ const SignUp = ({ navigation }) => {
             style={{
               width: "100%",
               height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
               borderRadius: 8,
               alignItems: "center",
               justifyContent: "center",
               paddingLeft: 22,
+              backgroundColor: "#F6F5F5",
             }}
           >
             <TextInput
               placeholder="Full Name"
-              placeholderTextColor={COLORS.grey}
+              placeholderTextColor="#B4B4B8"
               keyboardType="name-phone-pad"
               style={{
                 width: "100%",
@@ -72,17 +71,16 @@ const SignUp = ({ navigation }) => {
             style={{
               width: "100%",
               height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
               borderRadius: 8,
               alignItems: "center",
               justifyContent: "center",
               paddingLeft: 22,
+              backgroundColor: "#F6F5F5",
             }}
           >
             <TextInput
               placeholder="E-mail address"
-              placeholderTextColor={COLORS.grey}
+              placeholderTextColor="#B4B4B8"
               keyboardType="email-address"
               style={{
                 width: "100%",
@@ -96,30 +94,27 @@ const SignUp = ({ navigation }) => {
             style={{
               width: "100%",
               height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
               borderRadius: 8,
               alignItems: "center",
               flexDirection: "row",
               justifyContent: "space-between",
               paddingLeft: 22,
+              backgroundColor: "#F6F5F5",
             }}
           >
             <TextInput
               placeholder="+90"
-              placeholderTextColor={COLORS.grey}
+              placeholderTextColor="#B4B4B8"
               keyboardType="numeric"
               style={{
                 width: "12%",
-                borderRightWidth: 1,
-                borderLeftColor: COLORS.grey,
                 height: "100%",
               }}
             />
 
             <TextInput
               placeholder="Phone Number"
-              placeholderTextColor={COLORS.grey}
+              placeholderTextColor="#B4B4B8"
               keyboardType="numeric"
               style={{
                 width: "80%",
@@ -128,14 +123,12 @@ const SignUp = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={{ marginBottom: 12 }}>
+        <View style={{ marginBottom: 20 }}>
           <View
             style={{
               width: "100%",
               height: 48,
-              borderColor: COLORS.grey,
-              backgroundColor: COLORS.grey,
-              borderWidth: 1,
+              backgroundColor: "#F6F5F5",
               borderRadius: 8,
               alignItems: "center",
               justifyContent: "center",
@@ -144,7 +137,7 @@ const SignUp = ({ navigation }) => {
           >
             <TextInput
               placeholder="Password"
-              placeholderTextColor={COLORS.black}
+              placeholderTextColor="#B4B4B8"
               secureTextEntry={!isPasswordShown}
               style={{
                 width: "100%",
@@ -180,14 +173,14 @@ const SignUp = ({ navigation }) => {
             color={isChecked ? COLORS.primary : undefined}
           />
 
-          <Text>I aggree to the terms and conditions</Text>
+          <Text>I agree to the terms and conditions</Text>
         </View>
 
         <Button
           title="Sign Up"
           filled
           style={{
-            marginTop: 18,
+            marginTop: 25,
             marginBottom: 4,
           }}
         />
@@ -196,16 +189,16 @@ const SignUp = ({ navigation }) => {
           style={{
             flexDirection: "row",
             justifyContent: "center",
-            marginVertical: 22,
+            marginVertical: 25,
           }}
         >
-          <Text style={{ fontSize: 16, color: COLORS.black }}>
-            Already have an account
+          <Text style={{ fontSize: 14, color: COLORS.black }}>
+            Already a member ?
           </Text>
           <Pressable onPress={() => navigation.navigate("Login")}>
             <Text
               style={{
-                fontSize: 16,
+                fontSize: 14,
                 color: COLORS.primary,
                 fontWeight: "bold",
                 marginLeft: 6,

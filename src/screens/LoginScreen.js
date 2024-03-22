@@ -18,7 +18,7 @@ const Login = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={{ flex: 1, marginHorizontal: 22 }}>
-        <View style={{ marginVertical: 22 }}>
+        <View style={{ marginVertical: 30 }}>
           <Text
             style={{
               fontSize: 25,
@@ -27,7 +27,7 @@ const Login = ({ navigation }) => {
               color: COLORS.black,
             }}
           >
-            Hi Welcome Back ! 👋
+            Welcome Back ! 👋
           </Text>
 
           <Text
@@ -41,32 +41,21 @@ const Login = ({ navigation }) => {
           </Text>
         </View>
 
-        <View style={{ marginBottom: 12 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 400,
-              marginVertical: 8,
-            }}
-          >
-            Email address
-          </Text>
-
+        <View style={{ marginBottom: 25 }}>
           <View
             style={{
               width: "100%",
               height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
               borderRadius: 8,
               alignItems: "center",
               justifyContent: "center",
               paddingLeft: 22,
+              backgroundColor: "#F6F5F5",
             }}
           >
             <TextInput
               placeholder="Enter your email address"
-              placeholderTextColor={COLORS.black}
+              placeholderTextColor="#B4B4B8"
               keyboardType="email-address"
               style={{
                 width: "100%",
@@ -76,31 +65,20 @@ const Login = ({ navigation }) => {
         </View>
 
         <View style={{ marginBottom: 12 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 400,
-              marginVertical: 8,
-            }}
-          >
-            Password
-          </Text>
-
           <View
             style={{
               width: "100%",
               height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
               borderRadius: 8,
               alignItems: "center",
               justifyContent: "center",
               paddingLeft: 22,
+              backgroundColor: "#F6F5F5",
             }}
           >
             <TextInput
               placeholder="Enter your password"
-              placeholderTextColor={COLORS.black}
+              placeholderTextColor="#B4B4B8"
               secureTextEntry={!isPasswordShown}
               style={{
                 width: "100%",
@@ -130,31 +108,6 @@ const Login = ({ navigation }) => {
             marginBottom: 4,
           }}
         />
-
-        <View
-          style={{
-            flexDirection: "row",
-            marginVertical: 6,
-          }}
-        ></View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginVertical: 20,
-            backgroundColor: COLORS.grey,
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              height: 1,
-              backgroundColor: COLORS.grey,
-              marginHorizontal: 10,
-            }}
-          />
-        </View>
 
         <View
           style={{
