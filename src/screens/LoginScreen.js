@@ -103,6 +103,7 @@ const Login = ({ navigation }) => {
         <Button
           title="Login"
           filled
+          onPress={() => navigation.navigate("Main", { name: "User" })}
           style={{
             marginTop: 18,
             marginBottom: 4,

@@ -104,8 +104,10 @@ const SignUp = ({ navigation }) => {
           >
             <TextInput
               placeholder="+90"
-              placeholderTextColor="#B4B4B8"
+              placeholderTextColor={COLORS.black}
               keyboardType="numeric"
+              defaultValue="+90"
+              editable={false}
               style={{
                 width: "12%",
                 height: "100%",
@@ -116,6 +118,7 @@ const SignUp = ({ navigation }) => {
               placeholder="Phone Number"
               placeholderTextColor="#B4B4B8"
               keyboardType="numeric"
+              maxLength={11}
               style={{
                 width: "80%",
               }}
