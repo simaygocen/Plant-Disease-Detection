@@ -1,11 +1,22 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // veya istediğiniz ikon kütüphanesini kullanabilirsiniz
+import { Ionicons } from "@expo/vector-icons";
 
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Welcome Home</Text>
+      <View>
+        <Text style={styles.descriptionText}>Take a photo of</Text>
+        <Text style={styles.descriptionText}>your plant</Text>
+        <Text style={styles.descriptionText}>or upload an image</Text>
+      </View>
+      <View>
+        <Image
+          source={require("../../assets/down-arrow.png")}
+          style={styles.arrow}
+        />
+      </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity>
           <Image
@@ -31,6 +42,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 150, // Sayfanın üstünden boşluk bırakma
   },
+  arrow: {
+    bottom: 100,
+    right: 4,
+    width: 100,
+    height: 100,
+  },
   welcomeText: {
     fontSize: 44,
     fontWeight: "bold",
@@ -38,13 +55,14 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
+    bottom: 140,
   },
   circleButton: {
     backgroundColor: "green",
     padding: 50,
     borderRadius: 130,
     right: 30,
-    top: 90,
+    top: 100,
   },
   camera: {
     width: 64,
@@ -53,8 +71,17 @@ const styles = StyleSheet.create({
   upload: {
     width: 64,
     height: 64,
-    top: 145,
+    top: 150,
     right: 50,
+  },
+  descriptionText: {
+    fontSize: 30,
+    color: "black",
+    paddingHorizontal: 20,
+    textAlign: "left",
+    bottom: 130,
+    right: 30,
+    fontWeight: "300",
   },
 });
 export default HomeScreen;
