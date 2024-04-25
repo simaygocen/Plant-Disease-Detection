@@ -4,7 +4,8 @@ import { Image } from "react-native";
 
 import Profile from "./ProfileScreen";
 import HomeScreen from "./HomeScreen";
-import PlantsScreen from "./PlantScreen";
+import PlantsScreen from "./PlantScreen"; // Assuming you have a PlantsScreen component
+import PredictScreen from "./PredictScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -67,6 +68,11 @@ const MainScreen = () => {
         name="Plants"
         component={PlantsScreen}
         options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Predict"
+        component={PredictScreen} // Add the component for the Predict screen
+        options={{ headerShown: false, tabBarButton: () => null }} // Tabbar'da göstermek istemediğimiz için tabBarButton'ı null yapıyoruz
       />
       <Tab.Screen
         name="Profile"

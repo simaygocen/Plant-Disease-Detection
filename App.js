@@ -4,6 +4,7 @@ import Login from "./src/screens/LoginScreen";
 import SignUp from "./src/screens/SignUpScreen";
 import Main from "./src/screens/MainScreen";
 import Home from "./src/screens/HomeScreen";
+import Predict from "./src/screens/PredictScreen"
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -31,6 +32,11 @@ export default function App() {
         <Stack.Screen
           name="Main"
           component={Main}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Predict"
+          component={Predict}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

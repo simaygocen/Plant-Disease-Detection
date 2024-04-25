@@ -7,9 +7,17 @@ import {
   Image,
   Dimensions,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native"; // Import useNavigation hook
+
 
 const { width, height } = Dimensions.get("window");
 const HomeScreen = () => {
+  const navigation = useNavigation(); // Initialize navigation
+
+  const navigateToPredictScreen = () => {
+    navigation.navigate("Predict"); // Navigate to PredictScreen
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Welcome Home</Text>
@@ -31,7 +39,10 @@ const HomeScreen = () => {
             style={styles.upload}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.circleButton}>
+        <TouchableOpacity
+          style={styles.circleButton}
+          onPress={navigateToPredictScreen} // Add onPress event
+        >
           <Image
             source={require("../../assets/camera.png")}
             style={styles.camera}
