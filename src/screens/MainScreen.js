@@ -1,10 +1,10 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
+import { Image } from "react-native";
 
 import Profile from "./ProfileScreen";
 import HomeScreen from "./HomeScreen";
-import PlantsScreen from "./PlantScreen"; // Assuming you have a PlantsScreen component
+import PlantsScreen from "./PlantScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -12,16 +12,39 @@ const MainScreen = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused }) => {
           let iconName;
-          if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Plants") {
-            iconName = focused ? "leaf" : "leaf-outline"; // Choose appropriate icon
-          } else if (route.name === "Profile") {
-            iconName = focused ? "person" : "person-outline";
+          let style = {};
+
+          switch (route.name) {
+            case "Home":
+              iconName = require("../../assets/home.png");
+              style = {
+                width: 27,
+                height: 27,
+                tintColor: "black",
+                opacity: focused ? 1 : 0.5,
+              };
+              break;
+            case "Plants":
+              iconName = require("../../assets/leaf.png");
+              style = { width: 32, height: 32, opacity: focused ? 1 : 0.5 }; // Slightly larger and rounded
+              break;
+            case "Diagnose":
+              iconName = require("../../assets/plantDiagnose.png");
+              style = { width: 40, height: 40, opacity: focused ? 1 : 0.5 }; // Change opacity based on focus
+              break;
+            case "Profile":
+              iconName = require("../../assets/user.png");
+              style = {
+                width: 28,
+                height: 28,
+                opacity: focused ? 1 : 0.5,
+              };
+              break;
           }
-          return <Ionicons name={iconName} size={size} color={color} />;
+
+          return <Image source={iconName} style={style} />;
         },
         tabBarInactiveTintColor: "gray",
         tabBarActiveTintColor: "blue",
@@ -36,8 +59,13 @@ const MainScreen = () => {
         options={{ headerShown: false }}
       />
       <Tab.Screen
+        name="Diagnose"
+        component={Profile} // Ensure this is correctly mapped to your Diagnose screen
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
         name="Plants"
-        component={PlantsScreen} // Add the component for the Plants screen
+        component={PlantsScreen}
         options={{ headerShown: false }}
       />
       <Tab.Screen
