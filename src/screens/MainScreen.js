@@ -31,9 +31,9 @@ const MainScreen = () => {
               iconName = require("../../assets/leaf.png");
               style = { width: 32, height: 32, opacity: focused ? 1 : 0.5 }; // Slightly larger and rounded
               break;
-            case "Diagnose":
-              iconName = require("../../assets/plantDiagnose.png");
-              style = { width: 40, height: 40, opacity: focused ? 1 : 0.5 }; // Change opacity based on focus
+            case "Diseases":
+              iconName = require("../../assets/mikrop.png");
+              style = { width: 35, height: 35, opacity: focused ? 1 : 0.5 }; // Change opacity based on focus
               break;
             case "Profile":
               iconName = require("../../assets/user.png");
@@ -60,7 +60,7 @@ const MainScreen = () => {
         options={{ headerShown: false }}
       />
       <Tab.Screen
-        name="Diagnose"
+        name="Diseases"
         component={Profile} // Ensure this is correctly mapped to your Diagnose screen
         options={{ headerShown: false }}
       />
