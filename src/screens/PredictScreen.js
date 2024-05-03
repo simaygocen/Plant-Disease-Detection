@@ -1,15 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, TextInput, Dimensions } from 'react-native';
 
-const PredictScreen = () => {
+export default function PredictScreen({ route }) {
+  const { photoUri, prediction } = route.params;
+  const [ResultText,setResultText] = useState('');
+  const [SuggestionText,setSuggestionText] = useState('');
   const [inputText, setInputText] = useState('My Plant');
   const windowWidth = Dimensions.get('window').width;
+
+
+  useEffect(() => {
+    if (prediction === 'Black_Rot') {
+      setResultText("Your plant has Black Rot disease.");
+      setSuggestionText("You can change and renew the soil of your plant.");
+    } else if (prediction === 'Scab') {
+      setResultText("Your plant has Scab disease.");
+      setSuggestionText("Remove diseased leaves regularly. Keep the plant away from humid environments and excessive watering.");
+    } else if (prediction === 'Cedar_Rust') {
+      setResultText("Your plant has Cedar Rust disease.");
+      setSuggestionText("Prevent the spread of the disease by regularly ventilating the plant's environment and exposing it to sunlight.");
+    } else {
+      setResultText("Your plant is Healthy.");
+      setSuggestionText("Your plant is in fine conditions. You can continue your habits.");
+    }
+  }, [prediction]);
+  
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
       {/* Fotoğraf */}
       <View style={{ width: windowWidth - 40, height: windowWidth - 40, backgroundColor: 'lightgray', justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
-        <Image source={require('../../assets/apple_scab.png')} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+        <Image source={{uri: photoUri}} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
       </View>
 
       {/* Text Input */}
@@ -31,13 +52,13 @@ const PredictScreen = () => {
         {/* Result */}
         <View style={{ marginBottom: 20 }}>
           <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'green' }}>Result</Text>
-          <Text style={{ fontSize: 16}}>Your plant has Scab disease.</Text>
+          <Text style={{ fontSize: 16}}>{ResultText}</Text>
         </View>
 
         {/* Suggestions */}
         <View>
           <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'green', marginBottom: 10 }}>Suggestions</Text>
-          <Text style={{ fontSize: 16}}>You can change and renew the soil of your plant.</Text>
+          <Text style={{ fontSize: 16}}>{SuggestionText}</Text>
         </View>
       </View>
 
@@ -49,4 +70,3 @@ const PredictScreen = () => {
   );
 };
 
-export default PredictScreen;
