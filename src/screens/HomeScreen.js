@@ -174,16 +174,20 @@ export default function HomeScreen() {
                   {console.log(photo.uri)}
                   <Image style={styles.preview} source={{ uri: photo.uri }} />
                   <View style={styles.buttonContainer}>
-                    <Button 
-                      title="Predict" 
-                      onPress={predict} 
-                    />
-                    <Button title="Retake" onPress={retake}/>
+                  <TouchableOpacity onPress={predict} style={{ backgroundColor: 'green', borderRadius: 15, padding: 15 }}>
+                    <Text style={{ color: 'white' ,fontWeight:'bold' }}>Predict</Text>
+                  </TouchableOpacity>   
+                  <TouchableOpacity onPress={retake} style={{ backgroundColor: 'green' , borderRadius: 15, padding: 15}}>
+                    <Text style={{ color: 'white' , fontWeight:'bold'}}>Retake</Text>
+                  </TouchableOpacity>
                   </View>
                 </View>
               ) : (
                 <Camera style={styles.camera} ref={cameraRef}>
-                  <Button title="Take Pic" onPress={takePic} style={{color: 'green', fontWeight: 'bold'}}/>
+                  <TouchableOpacity onPress={takePic} style={{ backgroundColor: 'green', borderRadius: 15, padding: 10, alignItems: 'center', justifyContent: 'center', top : 360 }}>
+                    <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>Take Pic</Text>
+                  </TouchableOpacity>
+
                 </Camera>
               )}
             </View>
@@ -194,8 +198,12 @@ export default function HomeScreen() {
                   {console.log(photo.assets[0].uri)}
                   <Image style={styles.preview} source={{ uri: photo.assets[0].uri }} />
                   <View style={styles.buttonContainer}>
-                    <Button title="Predict" onPress={predict}/>
-                    <Button title="Reupload" onPress={reupload} />
+                  <TouchableOpacity onPress={predict} style={{ backgroundColor: 'green', borderRadius: 15, padding: 15 }}>
+                    <Text style={{ color: 'white' ,fontWeight:'bold' }}>Predict</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={reupload} style={{ backgroundColor: 'green' , borderRadius: 15, padding: 15}}>
+                    <Text style={{ color: 'white' , fontWeight:'bold'}}>Reupload</Text>
+                  </TouchableOpacity>
                   </View>
                 </View>
               ) : (
