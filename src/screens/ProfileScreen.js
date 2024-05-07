@@ -1,63 +1,192 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
-  ImageBackground,
-  StyleSheet,
-  Dimensions,
   Text,
+  TouchableOpacity,
   Image,
+  TextInput,
+  Dimensions,
+  Alert,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const { width, height } = Dimensions.get("window");
+export default function ProfileScreen({ route }) {
+  const [usernameText, setUsernameText] = useState();
+  const [mailText, setMailText] = useState();
+  const windowWidth = Dimensions.get("window").width;
+  const navigation = useNavigation();
 
-const App = () => {
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch("http://192.168.1.9:3000/dashboard");
+        const data = await response.json();
+        console.log(data);
+        setUsernameText(data["username"]);
+        setMailText(data["email"]);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch("http://192.168.1.9:3000/edit", {
+        method: "POST",
+        body: JSON.stringify({
+          username: usernameText,
+          email: mailText,
+        }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        Alert.alert("Success", "User Updated Succesfully", [
+          {
+            text: "OK",
+            onPress: () => navigation.navigate("ProfileScreen"), // Navigate to HomeScreen
+          },
+        ]);
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      console.error("Error saving user data:", error);
+      alert("Failed to update user");
+    }
+  };
+  const handleLogout = async () => {
+    navigation.navigate("Login"); // 'LoginScreen' ekran adınız doğru olduğundan emin olun
+  };
+
   return (
-    <ImageBackground
-      source={require("../../assets/background.jpg")}
-      style={styles.background}
-      resizeMode="cover"
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+      }}
     >
-      <View style={styles.container}>
-        <Image
-          source={require("../../assets/logo2.png")}
-          style={[styles.logo, { width: width * 0.8 }]} // Genişliği cihaz genişliğinin %80'i olarak ayarla
-          resizeMode="contain"
-        />
-        <Text style={styles.name}>John Doe</Text>
-        <Text style={styles.email}>johndoe@example.com</Text>
-        <Text style={styles.phone}>123-456-7890</Text>
+      {/* Text Input alanı */}
+      <View style={{ width: windowWidth - 40, marginTop: 30 }}>
+        {/* Username Input */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            borderWidth: 3,
+            borderColor: "green",
+            borderRadius: 10,
+            marginBottom: 20,
+          }}
+        >
+          <TextInput
+            style={{
+              flex: 1,
+              fontSize: 18,
+              fontWeight: "bold",
+              padding: 10,
+              height: 50,
+              textAlign: "center",
+            }}
+            placeholder="Username"
+            value={usernameText}
+            onChangeText={setUsernameText}
+          />
+          <Image
+            source={require("../../assets/editing.png")}
+            style={{ width: 20, height: 20, marginRight: 10 }}
+          />
+        </View>
+        {/* Email Input */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            borderWidth: 3,
+            borderColor: "green",
+            borderRadius: 10,
+            marginBottom: 20,
+          }}
+        >
+          <TextInput
+            style={{
+              flex: 1,
+              fontSize: 18,
+              fontWeight: "bold",
+              padding: 10,
+              height: 50,
+              textAlign: "center",
+            }}
+            placeholder="Email"
+            value={mailText}
+            onChangeText={setMailText}
+          />
+          <Image
+            source={require("../../assets/editing.png")}
+            style={{ width: 20, height: 20, marginRight: 10 }}
+          />
+        </View>
       </View>
-    </ImageBackground>
+
+      {/* Butonlar Yatay Olarak */}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-around", // Butonlar arasında boşluk bırakır
+          width: windowWidth - 40, // View genişliğini ayarla
+          marginTop: 20,
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            width: 70,
+            padding: 10,
+            backgroundColor: "green",
+            borderRadius: 5,
+          }}
+          onPress={handleSave}
+        >
+          <Text
+            style={{ color: "white", fontWeight: "bold", textAlign: "center" }}
+          >
+            Save
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            width: 70,
+            padding: 10,
+            backgroundColor: "green",
+            borderRadius: 5,
+          }}
+        >
+          <Text
+            style={{ color: "white", fontWeight: "bold", textAlign: "center" }}
+          >
+            Delete Your Account
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            width: 70,
+            padding: 10,
+            backgroundColor: "green",
+            borderRadius: 5,
+          }}
+          onPress={handleLogout}
+        >
+          <Text
+            style={{ color: "white", fontWeight: "bold", textAlign: "center" }}
+          >
+            Logout
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
-};
-
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: width,
-    height: height,
-  },
-  container: {
-    flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    paddingTop: 20,
-  },
-  logo: {
-    height: 200,
-  },
-  name: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  email: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  phone: {
-    fontSize: 18,
-  },
-});
-
-export default App;
+}

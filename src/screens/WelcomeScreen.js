@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,11 +7,25 @@ import {
   SafeAreaView,
   Dimensions,
   Image,
+  Alert,
 } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
 const WelcomeScreen = ({ navigation }) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://192.168.1.9:3000/");
+        const json = await response.json();
+      } catch (error) {
+        Alert.alert("Error", "Unable to connect to the server");
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -22,7 +36,7 @@ const WelcomeScreen = ({ navigation }) => {
             resizeMode="contain"
           />
         </View>
-        <Text style={styles.welcomeText}>Appleio'ya{"\n"}hoş geldiniz !</Text>
+        <Text style={styles.welcomeText}>{"Appleio"}</Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.loginButton}

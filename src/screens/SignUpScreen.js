@@ -4,6 +4,7 @@ import {
   Image,
   Pressable,
   TextInput,
+  Alert,
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
@@ -13,9 +14,45 @@ import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import Button from "../components/button";
 
-const SignUp = ({ navigation }) => {
+const SignUpScreen = ({ navigation }) => {
+  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
+  const [password, setPassword] = useState("");
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+
+  const handleSignUp = async () => {
+    try {
+      const response = await fetch("http://192.168.1.9:3000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          firstName,
+          lastName,
+          email,
+          phoneNum,
+          password,
+        }),
+      });
+      const json = await response.json();
+      if (response.status === 201) {
+        Alert.alert("Success", "User created successfully", [
+          { text: "OK", onPress: () => navigation.navigate("Login") },
+        ]);
+      } else {
+        Alert.alert("Error", json.message);
+      }
+    } catch (error) {
+      Alert.alert("Error", "An error occurred. Please try again.");
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={{ flex: 1, marginHorizontal: 22 }}>
@@ -57,9 +94,59 @@ const SignUp = ({ navigation }) => {
             }}
           >
             <TextInput
-              placeholder="Full Name"
+              placeholder="Name"
               placeholderTextColor="#B4B4B8"
               keyboardType="name-phone-pad"
+              onChangeText={setFirstName}
+              value={firstName}
+              style={{
+                width: "100%",
+              }}
+            />
+          </View>
+        </View>
+        <View style={{ marginBottom: 20 }}>
+          <View
+            style={{
+              width: "100%",
+              height: 48,
+              borderRadius: 8,
+              alignItems: "center",
+              justifyContent: "center",
+              paddingLeft: 22,
+              backgroundColor: "#F6F5F5",
+            }}
+          >
+            <TextInput
+              placeholder="Last Name"
+              placeholderTextColor="#B4B4B8"
+              keyboardType="name-phone-pad"
+              onChangeText={setLastName}
+              value={lastName}
+              style={{
+                width: "100%",
+              }}
+            />
+          </View>
+        </View>
+        <View style={{ marginBottom: 20 }}>
+          <View
+            style={{
+              width: "100%",
+              height: 48,
+              borderRadius: 8,
+              alignItems: "center",
+              justifyContent: "center",
+              paddingLeft: 22,
+              backgroundColor: "#F6F5F5",
+            }}
+          >
+            <TextInput
+              placeholder="Username"
+              placeholderTextColor="#B4B4B8"
+              keyboardType="name-phone-pad"
+              onChangeText={setUsername}
+              value={username}
               style={{
                 width: "100%",
               }}
@@ -82,6 +169,8 @@ const SignUp = ({ navigation }) => {
               placeholder="E-mail address"
               placeholderTextColor="#B4B4B8"
               keyboardType="email-address"
+              onChangeText={setEmail}
+              value={email}
               style={{
                 width: "100%",
               }}
@@ -119,6 +208,8 @@ const SignUp = ({ navigation }) => {
               placeholderTextColor="#B4B4B8"
               keyboardType="numeric"
               maxLength={11}
+              onChangeText={setPhoneNum}
+              value={phoneNum}
               style={{
                 width: "80%",
               }}
@@ -142,6 +233,8 @@ const SignUp = ({ navigation }) => {
               placeholder="Password"
               placeholderTextColor="#B4B4B8"
               secureTextEntry={!isPasswordShown}
+              onChangeText={setPassword}
+              value={password}
               style={{
                 width: "100%",
               }}
@@ -182,6 +275,7 @@ const SignUp = ({ navigation }) => {
         <Button
           title="Sign Up"
           filled
+          onPress={handleSignUp}
           style={{
             marginTop: 25,
             marginBottom: 4,
@@ -216,4 +310,4 @@ const SignUp = ({ navigation }) => {
   );
 };
 
-export default SignUp;
+export default SignUpScreen;

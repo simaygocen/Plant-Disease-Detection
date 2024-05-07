@@ -2,6 +2,7 @@ import {
   View,
   Text,
   Image,
+  Alert,
   Pressable,
   TextInput,
   TouchableOpacity,
@@ -12,8 +13,36 @@ import COLORS from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../components/button";
 
-const Login = ({ navigation }) => {
+const LoginScreen = ({ navigation }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isPasswordShown, setIsPasswordShown] = useState(false);
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("http://192.168.1.9:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+      const json = await response.json();
+      if (response.status === 200) {
+        Alert.alert("Success", "Login successful", [
+          {
+            text: "OK",
+            onPress: () => navigation.navigate("Main"), // Navigate to HomeScreen
+          },
+        ]);
+      } else {
+        Alert.alert("Error", json.message);
+      }
+    } catch (error) {
+      console.error("Failed to login:", error);
+      Alert.alert("Error", "An error occurred. Please try again.");
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -54,9 +83,11 @@ const Login = ({ navigation }) => {
             }}
           >
             <TextInput
-              placeholder="Enter your email address"
+              placeholder="Enter your user name"
               placeholderTextColor="#B4B4B8"
-              keyboardType="email-address"
+              keyboardType="name-phone-pad"
+              onChangeText={setUsername}
+              value={username}
               style={{
                 width: "100%",
               }}
@@ -80,6 +111,8 @@ const Login = ({ navigation }) => {
               placeholder="Enter your password"
               placeholderTextColor="#B4B4B8"
               secureTextEntry={!isPasswordShown}
+              onChangeText={setPassword}
+              value={password}
               style={{
                 width: "100%",
               }}
@@ -103,7 +136,7 @@ const Login = ({ navigation }) => {
         <Button
           title="Login"
           filled
-          onPress={() => navigation.navigate("Main", { name: "User" })}
+          onPress={handleLogin}
           style={{
             marginTop: 18,
             marginBottom: 4,
@@ -140,4 +173,4 @@ const Login = ({ navigation }) => {
   );
 };
 
-export default Login;
+export default LoginScreen;
