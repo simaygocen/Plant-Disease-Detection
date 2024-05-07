@@ -112,6 +112,14 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+@app.route('/delete_account', methods=['POST'])
+@login_required
+def delete_account():
+    user = current_user
+    db.session.delete(user)
+    db.session.commit()
+    logout_user()
+    return jsonify({'message': 'Your account has been deleted.'})
 
 #--------------PREDICITON--------------
 app.add_url_rule('/predict', view_func=predict, methods=["POST"])

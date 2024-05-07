@@ -61,6 +61,38 @@ export default function ProfileScreen({ route }) {
   const handleLogout = async () => {
     navigation.navigate("Login"); // 'LoginScreen' ekran adınız doğru olduğundan emin olun
   };
+  const handleDeleteAccount = async () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to delete your account? This cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const response = await fetch(
+                "http://192.168.1.9:3000/delete_account",
+                {
+                  method: "POST",
+                }
+              );
+
+              if (response.ok) {
+                navigation.navigate("Welcome");
+              } else {
+                throw new Error("Failed to delete the account");
+              }
+            } catch (error) {
+              console.error("Error deleting account:", error);
+              alert("Failed to delete the account");
+            }
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <View
@@ -164,6 +196,7 @@ export default function ProfileScreen({ route }) {
             backgroundColor: "green",
             borderRadius: 5,
           }}
+          onPress={handleDeleteAccount}
         >
           <Text
             style={{ color: "white", fontWeight: "bold", textAlign: "center" }}
