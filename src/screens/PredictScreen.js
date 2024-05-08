@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, TextInput, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, Image, TextInput, Dimensions,Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function PredictScreen({ route }) {
   const { photoUri, prediction } = route.params;
@@ -24,6 +25,40 @@ export default function PredictScreen({ route }) {
       setSuggestionText("Your plant is in fine conditions. You can continue your habits.");
     }
   }, [prediction]);
+
+  const handleSave = async () => {
+    try {
+      /*http://192.168.1.9:3000/saveprediction*/
+      const accessToken = await AsyncStorage.getItem('accessToken');
+      const response = await fetch("http://192.168.1.7:3000/saveprediction", {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          photoUri,
+          prediction,
+          inputText
+        }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        Alert.alert("Success", "Prediction Saved Succesfully", [
+          {
+            text: "OK",
+            
+          },
+        ]);
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      console.error("Error saving prediction result:", error);
+      alert("Failed to prediction result saving");
+    }
+  };
   
 
   return (
@@ -63,7 +98,7 @@ export default function PredictScreen({ route }) {
       </View>
 
       {/* Save Butonu */}
-      <TouchableOpacity style={{ width: 70, padding: 10, backgroundColor: 'green', borderRadius: 5,marginTop:20 }}>
+      <TouchableOpacity style={{ width: 70, padding: 10, backgroundColor: 'green', borderRadius: 5,marginTop:20 }}onPress={handleSave}>
         <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>Save</Text>
       </TouchableOpacity>
     </View>

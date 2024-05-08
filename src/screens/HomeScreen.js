@@ -94,7 +94,7 @@ export default function HomeScreen() {
         name: "photo.jpg",
       });
 
-      /* SİMAY
+      /* SİMAY*/
       const response = await fetch('http://192.168.1.7:3000/predict', 
       {
         method: 'POST',
@@ -103,15 +103,15 @@ export default function HomeScreen() {
           'Content-Type': 'multipart/form-data',
         },
       });
-      */
+      
       /* ELİF */
-      const response = await fetch("http://192.168.1.9:3000/predict", {
+      /*const response = await fetch("http://192.168.1.9:3000/predict", {
         method: "POST",
         body: formData,
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      });
+      });*/
 
       if (!response.ok) {
         throw new Error("Prediction failed");

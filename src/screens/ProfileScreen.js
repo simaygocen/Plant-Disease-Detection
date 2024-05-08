@@ -9,6 +9,8 @@ import {
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function ProfileScreen({ route }) {
   const [usernameText, setUsernameText] = useState();
@@ -17,28 +19,47 @@ export default function ProfileScreen({ route }) {
   const navigation = useNavigation();
 
   useEffect(() => {
+    // Erişim tokenini her istekte ekleyin
     const fetchUserData = async () => {
-      try {
-        const response = await fetch("http://192.168.1.9:3000/dashboard");
-        const data = await response.json();
-        console.log(data);
-        setUsernameText(data["username"]);
-        setMailText(data["email"]);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+    try {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        const response = await fetch('http://192.168.1.7:3000/dashboard', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      /*console.log(data);*/
+      setUsernameText(data["username"]);
+      setMailText(data["email"]);
+    } else {
+      console.error('Error fetching user data:', response.status);
+    }
+    } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
+};
+
 
     fetchUserData();
   }, []);
 
   const handleSave = async () => {
     try {
-      const response = await fetch("http://192.168.1.9:3000/edit", {
+      /*http://192.168.1.9:3000/edit*/
+      const accessToken = await AsyncStorage.getItem('accessToken');
+      const response = await fetch("http://192.168.1.7:3000/edit", {
         method: "POST",
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
-          username: usernameText,
-          email: mailText,
+          usernameText,
+          mailText
         }),
       });
 
@@ -59,6 +80,7 @@ export default function ProfileScreen({ route }) {
     }
   };
   const handleLogout = async () => {
+    await AsyncStorage.clear();
     navigation.navigate("Login"); // 'LoginScreen' ekran adınız doğru olduğundan emin olun
   };
   const handleDeleteAccount = async () => {
@@ -72,10 +94,15 @@ export default function ProfileScreen({ route }) {
           style: "destructive",
           onPress: async () => {
             try {
+              const accessToken = await AsyncStorage.getItem('accessToken');
               const response = await fetch(
-                "http://192.168.1.9:3000/delete_account",
-                {
-                  method: "POST",
+                /*http://192.168.1.9:3000/delete_account*/
+                "http://192.168.1.7:3000/delete_account",{
+                  method: "GET",
+                  headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                  },
                 }
               );
 

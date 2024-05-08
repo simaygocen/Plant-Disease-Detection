@@ -12,6 +12,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import COLORS from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../components/button";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -20,7 +22,8 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://192.168.1.9:3000/login", {
+      /*http://192.168.1.9:3000/login*/
+      const response = await fetch("http://192.168.1.7:3000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,6 +31,9 @@ const LoginScreen = ({ navigation }) => {
         body: JSON.stringify({ username, password }),
       });
       const json = await response.json();
+      const accessToken = json.access_token;
+      await AsyncStorage.setItem('accessToken', accessToken);
+      
       if (response.status === 200) {
         Alert.alert("Success", "Login successful", [
           {

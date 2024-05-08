@@ -1,19 +1,14 @@
 from prediction import predict
-from flask import Flask, render_template, url_for, redirect, jsonify,request
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, ValidationError
+from flask import Flask, jsonify,request
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
-from models import db, User  # Import db and User from model.py
-
-
+from models import db, User,Predictions  # Import db and User from model.py
+from flask_jwt_extended import create_access_token,jwt_required,JWTManager,get_jwt_identity
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://appuser:Uykusuz01@localhost/plantdisease'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://appuser:Uykusuz01@localhost/plantdisease'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/plantdisease'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 
@@ -22,16 +17,7 @@ bcrypt = Bcrypt(app)
 
 db.init_app(app)
 CORS(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
-
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    print(user_id)
-    return User.query.get(int(user_id))
+jwt=JWTManager(app)
 
 
 #---------------HOME ------------- 
@@ -39,17 +25,27 @@ def load_user(user_id):
 def home():
     return jsonify({"status": "success"})
 
+@app.route('/protected',methods=['GET'])
+@jwt_required()
+def protected():
+    current_user_id=get_jwt_identity()
+    return {'message': f"hello user {current_user_id}, you accessed protected resources"}
+
 #---------------LOGIN ------------- 
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
+    print(data)
     username = data.get('username')
     password = data.get('password')
     user = User.query.filter_by(username=username).first()
     
     if user and bcrypt.check_password_hash(user.password, password):
-        login_user(user)
-        return jsonify({'message': 'Login successful', 'user': {'id': user.id, 'username': user.username}}), 200
+
+        access_token=create_access_token(identity=user.id)
+        user.token=access_token
+        db.session.commit()
+        return jsonify({'access_token': access_token}), 200
     else:
         return jsonify({'message': 'Invalid credentials'}), 401
 
@@ -57,6 +53,7 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
+    print(data)
     username = data['username']
     email = data['email']
 
@@ -82,81 +79,82 @@ def register():
 
     return jsonify({"message": "User created successfully"}), 201
 
-#---------------İŞE YARAMIYOR ŞUANLIK ------------- 
 @app.route('/dashboard', methods=['GET'])
-@login_required
+@jwt_required()
 def dashboard():
-    user_info = {
-        "username": current_user.username,
-        "email": current_user.email,
-        
-    }
-    return jsonify(user_info)
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(id=current_user_id).first()
+    if user:
+        return jsonify({"username": user.username, "email": user.email}), 200
+    else:
+        return jsonify({"message": "User not found"}), 404
 
 @app.route('/edit', methods=['POST'])
-@login_required
+@jwt_required()
 def edit():
     data = request.get_json()
-
-  
-    current_user.username = data.get('username')
-    current_user.email = data.get('email')
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(id=current_user_id).first()
+    user.username=data.get('usernameText')
+    user.email = data.get('mailText')
     db.session.commit()
     return jsonify({'message': 'User updated successfully'}), 200
+
+@app.route('/saveprediction', methods=['POST'])
+@jwt_required()
+def save_prediction():
+    data = request.get_json()
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(id=current_user_id).first()
+    user_id=user.id
+    image=data.get('photoUri')
+    result=data.get('prediction')
+    plantname=data.get('inputText')
+    try:
+         prediction = Predictions(user_id=user_id, image=image, result=result, plantname=plantname)
+         db.session.add(prediction)
+         db.session.commit()
+    except IntegrityError:
+         db.session.rollback()
+         return jsonify({"message": "Failed to prediction saving"}), 500
+
+    return jsonify({"message": "Prediction saved successfully"}), 201
+
+@app.route('/getplants', methods=['GET'])
+@jwt_required()
+def get_plants():
+    current_user_id = get_jwt_identity()
+    predictions = Predictions.query.filter_by(user_id=current_user_id).all()
+    if predictions:
+        result_list = []
+        for prediction in predictions:
+            result_list.append({
+                "image": prediction.image,
+                "result": prediction.result,
+                "plantname": prediction.plantname
+            })
+        return jsonify(result_list), 200
+    else:
+        return jsonify({"message": "Predictions not found."}), 404
     
-
-#---------------LOG OUT İŞE YARAMIYOR ŞUANLIK ------------- 
-@app.route('/logout', methods=['GET', 'POST'])
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
-@app.route('/delete_account', methods=['POST'])
-@login_required
+@app.route('/delete_account', methods=['GET'])
+@jwt_required()
 def delete_account():
-    user = current_user
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(id=current_user_id).first()
     db.session.delete(user)
     db.session.commit()
-    logout_user()
     return jsonify({'message': 'Your account has been deleted.'})
 
 #--------------PREDICITON--------------
 app.add_url_rule('/predict', view_func=predict, methods=["POST"])
 
-
-
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-        app.run(host='192.168.1.9', port=3000, debug=True)
-        #app.run(host='192.168.1.7', port=3000, debug=True)
+        #app.run(host='192.168.1.9', port=3000, debug=True)
+        app.run(host='192.168.1.7', port=3000, debug=True)
 
 
 
-class RegisterForm(FlaskForm):
-    username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-
-    password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
-
-    submit = SubmitField('Register')
-
-    def validate_username(self, username):
-        existing_user_username = User.query.filter_by(
-            username=username.data).first()
-        if existing_user_username:
-            raise ValidationError(
-                'That username already exists. Please choose a different one.')
-
-class LoginForm(FlaskForm):
-    username = StringField(validators=[
-                           InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-
-    password = PasswordField(validators=[
-                             InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
-
-    submit = SubmitField('Login')
-    
     

@@ -27,7 +27,7 @@ const MainScreen = () => {
                 opacity: focused ? 1 : 0.5,
               };
               break;
-            case "Plants":
+            case "My Plants":
               iconName = require("../../assets/leaf.png");
               style = { width: 32, height: 32, opacity: focused ? 1 : 0.5 }; // Slightly larger and rounded
               break;
@@ -65,7 +65,7 @@ const MainScreen = () => {
         options={{ headerShown: false }}
       />
       <Tab.Screen
-        name="Plants"
+        name="My Plants"
         component={PlantsScreen}
         options={{ headerShown: false }}
       />
