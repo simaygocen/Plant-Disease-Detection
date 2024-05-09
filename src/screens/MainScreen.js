@@ -8,6 +8,7 @@ import DiseaseScreen from "./DiseaseScreen";
 import HomeScreen from "./HomeScreen";
 import PlantsScreen from "./PlantScreen"; 
 import PredictScreen from "./PredictScreen";
+import SavedPredictionScreen from "./SavedPredictionScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -93,6 +94,11 @@ const MainScreen = () => {
         name="Profile"
         component={Profile}
         options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="SavedPredictionScreen"
+        component={SavedPredictionScreen} // Add the component for the Predict screen
+        options={{ headerShown: false, tabBarButton: () => null }} // Tabbar'da göstermek istemediğimiz için tabBarButton'ı null yapıyoruz
       />
     </Tab.Navigator>
   );
