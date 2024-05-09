@@ -23,7 +23,7 @@ export default function ProfileScreen({ route }) {
     const fetchUserData = async () => {
     try {
         const accessToken = await AsyncStorage.getItem('accessToken');
-        const response = await fetch('http://192.168.1.7:3000/dashboard', {
+        const response = await fetch('http://192.168.1.15:3000/dashboard', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${accessToken}`,

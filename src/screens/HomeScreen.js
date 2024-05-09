@@ -95,7 +95,7 @@ export default function HomeScreen() {
       });
 
       /* SİMAY*/
-      const response = await fetch('http://192.168.1.7:3000/predict', 
+      const response = await fetch('http://192.168.1.15:3000/predict', 
       {
         method: 'POST',
         body: formData,

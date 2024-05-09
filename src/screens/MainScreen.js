@@ -1,15 +1,26 @@
-import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
 
 import Profile from "./ProfileScreen";
+import DiseaseScreen from "./DiseaseScreen";
 import HomeScreen from "./HomeScreen";
-import PlantsScreen from "./PlantScreen"; // Assuming you have a PlantsScreen component
+import PlantsScreen from "./PlantScreen"; 
 import PredictScreen from "./PredictScreen";
 
 const Tab = createBottomTabNavigator();
 
 const MainScreen = () => {
+  const navigation = useNavigation();
+  const [refresh, setRefresh] = useState(0);
+
+  const handleHomePress = () => {
+    // This function will be called when the Home tab is pressed
+    // Reset the state to simulate a screen refresh
+    setRefresh((prev) => prev + 1);
+  };
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -56,12 +67,16 @@ const MainScreen = () => {
     >
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        listeners={{
+          tabPress: handleHomePress, // Call handleHomePress on tab press
+        }}
         options={{ headerShown: false }}
-      />
+      >
+        {() => <HomeScreen refresh={refresh} />}
+      </Tab.Screen>
       <Tab.Screen
         name="Diseases"
-        component={Profile} // Ensure this is correctly mapped to your Diagnose screen
+        component={DiseaseScreen} // Ensure this is correctly mapped to your Diagnose screen
         options={{ headerShown: false }}
       />
       <Tab.Screen

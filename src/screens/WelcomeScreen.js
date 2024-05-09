@@ -17,7 +17,7 @@ const WelcomeScreen = ({ navigation }) => {
     const fetchData = async () => {
       try {
         /*http://192.168.1.9:3000/*/
-        const response = await fetch("http://192.168.1.7:3000/");
+        const response = await fetch("http://192.168.1.15:3000/");
         const json = await response.json();
       } catch (error) {
         Alert.alert("Error", "Unable to connect to the server");
