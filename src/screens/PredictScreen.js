@@ -10,12 +10,13 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+
 export default function PredictScreen({ route }) {
   const { photoUri, prediction } = route.params;
-  const [ResultText, setResultText] = useState("");
-  const [SuggestionText, setSuggestionText] = useState("");
-  const [inputText, setInputText] = useState("My Plant");
-  const windowWidth = Dimensions.get("window").width;
+  const [ResultText,setResultText] = useState('');
+  const [SuggestionText,setSuggestionText] = useState('');
+  const [inputText, setInputText] = useState('My Plant');
+  const windowWidth = Dimensions.get('window').width;
 
   useEffect(() => {
     if (prediction === "Black_Rot") {
@@ -43,10 +44,11 @@ export default function PredictScreen({ route }) {
     setInputText("My Plant");
   }, [prediction]); // prediction değiştiğinde tetiklenir
 
+
   const handleSave = async () => {
     try {
       /*http://192.168.1.9:3000/saveprediction*/
-      const accessToken = await AsyncStorage.getItem("accessToken");
+      const accessToken = await AsyncStorage.getItem('accessToken');
       const response = await fetch("http://192.168.1.7:3000/saveprediction", {
         method: "POST",
         headers: {

@@ -32,36 +32,30 @@ export default function ProfileScreen({ route }) {
   const windowWidth = Dimensions.get("window").width;
   const navigation = useNavigation();
 
-  const [form, setForm] = useState({
-    darkMode: false,
-    emailNotifications: true,
-    pushNotifications: false,
-  });
-
   useEffect(() => {
+    // Erişim tokenini her istekte ekleyin
     const fetchUserData = async () => {
-      try {
-        const accessToken = await AsyncStorage.getItem("accessToken");
-        const response = await fetch("http://192.168.1.9:3000/dashboard", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUsernameText(data["username"]);
-          setMailText(data["email"]);
-          setProfileImage(data["profilePicture"]);
-        } else {
-          console.error("Error fetching user data:", response.status);
+    try {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        const response = await fetch('http://192.168.1.7:3000/dashboard', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
         }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
+    });
+    if (response.ok) {
+      const data = await response.json();
+      /*console.log(data);*/
+      setUsernameText(data["username"]);
+      setMailText(data["email"]);
+    } else {
+      console.error('Error fetching user data:', response.status);
+    }
+    } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
+};
     fetchUserData();
   }, []);
 

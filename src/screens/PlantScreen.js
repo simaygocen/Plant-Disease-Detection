@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,26 +8,73 @@ import {
   Dimensions,
   Image,
 } from "react-native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from "@expo/vector-icons";
+
 const { width, height } = Dimensions.get("window");
 
 const App = () => {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [plantList, setPlantList] = useState([]);
+  const [filteredPlantList, setFilteredPlantList] = useState([]);
+  const navigation = useNavigation();
 
-  const plants = [
-    {
-      name: "Plant 1",
-      images: [require("../../assets/cedarr.jpg")],
-    },
-    {
-      name: "Plant 2",
-      images: [require("../../assets/blackrot.jpeg")],
-    },
-    {
-      name: "Plant 3",
-      images: [require("../../assets/scab.png")],
-    },
-  ];
+  const fetchUserData = async () => {
+    try {
+      const accessToken = await AsyncStorage.getItem('accessToken');
+      const response = await fetch('http://192.168.1.7:3000/getplants', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const plants = data.map(prediction => ({
+          name: prediction.plantname,
+          images: [prediction.image],
+          result: prediction.result,
+          id: prediction.id
+        }));
+        setPlantList(plants);
+        const filteredPlants = filterPlantsByPrediction(activeFilter, plants);
+        setFilteredPlantList(filteredPlants);
+      } else {
+        console.error('Error fetching user data:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+  const filterPlantsByPrediction = (prediction, plants) => {
+    if (prediction === "All") {
+      return plants;
+    } else {
+      return plants.filter(plant => plant.result === prediction.replace(/ /g, "_"));
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData();
+    }, [])
+  );
+
+  useEffect(() => {
+    const filteredPlants = filterPlantsByPrediction(activeFilter, plantList);
+    setFilteredPlantList(filteredPlants);
+  }, [activeFilter, plantList]);
+
+  const navigateToSavedPredictionScreen = (plantId) => {
+    navigation.navigate('SavedPredictionScreen', { plantId: plantId });
+  };
 
   return (
     <View style={styles.container}>
@@ -42,7 +89,7 @@ const App = () => {
       </View>
       <View style={styles.filterContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {["All", "Healthy", "Apple Scab", "Black Rot", "Apple Cedar"].map(
+          {["All", "Healthy", "Scab", "Black Rot", "Cedar Rust"].map(
             (filter) => (
               <TouchableOpacity
                 key={filter}
@@ -66,17 +113,21 @@ const App = () => {
         </ScrollView>
       </View>
       <ScrollView style={styles.plantsContainer}>
-        {plants.map((plant) => (
-          <View key={plant.name} style={styles.plantItem}>
+        {filteredPlantList.map((plant) => (
+          <TouchableOpacity
+            key={plant.id}
+            style={styles.plantItem}
+            onPress={() => navigateToSavedPredictionScreen(plant.id)}
+          >
             {plant.images.map((image, index) => (
               <Image
                 key={`${plant.name}_${index}`}
-                source={image}
+                source={{ uri: image }}
                 style={styles.plantImage}
               />
             ))}
             <Text style={styles.plantText}>{plant.name}</Text>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
     </View>

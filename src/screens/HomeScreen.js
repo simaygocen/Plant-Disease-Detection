@@ -1,8 +1,7 @@
-import { useRef, useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useCallback,useRef } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
-import React from "react";
 import {
   View,
   Text,
@@ -10,37 +9,42 @@ import {
   StyleSheet,
   Image,
   Dimensions,
-  Button,
   Alert,
 } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
-export default function HomeScreen() {
-  const navigation = useNavigation();
+export default function HomeScreen({navigation,refresh}) {
+  //const navigation = useNavigation();
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
-  let cameraRef = useRef();
   const [photo, setPhoto] = useState(null);
+  const cameraRef = useRef();
+
+//const { refresh } = useContext(RefreshContext);
+useEffect(() => {
+  setIsCameraOpen(false); // Set isCameraOpen to false when refresh changes
+  setIsGalleryOpen(false);
+  setPhoto(null);
+}, [refresh]);
+
 
   useEffect(() => {
     (async () => {
       const cameraStatus = await Camera.requestCameraPermissionsAsync();
       setHasCameraPermission(cameraStatus.status === "granted");
-      const galleryStatus =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
       setHasGalleryPermission(galleryStatus.status);
     })();
+    if (hasCameraPermission === false) {
+      return <Text>No access to the camera.</Text>;
+    }
+    if (hasGalleryPermission === false) {
+      return <Text>No access to the gallery.</Text>;
+    }
   }, []);
-
-  if (hasCameraPermission === false) {
-    return <Text>No access to the camera.</Text>;
-  }
-  if (hasGalleryPermission === false) {
-    return <Text>No access to the gallery.</Text>;
-  }
 
   const takePic = async () => {
     if (cameraRef.current) {
@@ -94,23 +98,11 @@ export default function HomeScreen() {
         name: "photo.jpg",
       });
 
-      /* SİMAY*/
-      const response = await fetch('http://192.168.1.15:3000/predict', 
-      {
+      const response = await fetch('http://192.168.1.7:3000/predict', {
         method: 'POST',
         body: formData,
         headers: {
           'Content-Type': 'multipart/form-data',
-        },
-      });
-      */
-
-      /* ELİF */
-      const response = await fetch("http://192.168.1.9:3000/predict", {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
         },
       });
 
@@ -119,7 +111,6 @@ export default function HomeScreen() {
       }
 
       const data = await response.json();
-      /*console.log(photo.uri)*/
       navigation.navigate("Predict", {
         photoUri: fileUri,
         prediction: data["class"],
@@ -289,7 +280,7 @@ export default function HomeScreen() {
   );
 }
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
@@ -305,14 +296,14 @@ const styles = {
   },
   lineContainer: {
     width: 0.23 * width,
-    alignItems: "flex-start", // Changed to 'flex-start' to align left
-    justifyContent: "space-around", // Adjust to space-between to manage spacing in smaller container
+    alignItems: "flex-start",
+    justifyContent: "space-around",
     flexDirection: "row",
     top: 0.13 * height,
-    left: -0.007 * width, // Adjust this value to align the container to the left side as desired
+    left: -0.007 * width,
   },
   line: {
-    width: "30%", // Adjust width to fill container
+    width: "30%",
     borderBottomWidth: 2,
     borderBottomColor: "green",
     borderBottomStyle: "dashed",
@@ -388,4 +379,4 @@ const styles = {
     top: 0.25 * height,
     left: -0.1 * width,
   },
-};
+});

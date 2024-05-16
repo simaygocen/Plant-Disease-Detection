@@ -1,7 +1,7 @@
+import React, { useState, useEffect } from 'react';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
 
 import Profile from "./ProfileScreen";
 import DiseaseScreen from "./DiseaseScreen";
@@ -13,7 +13,7 @@ import SavedPredictionScreen from "./SavedPredictionScreen";
 const Tab = createBottomTabNavigator();
 
 const MainScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation(); // Navigation nesnesini burada alıyoruz
   const [refresh, setRefresh] = useState(0);
 
   const handleHomePress = () => {
@@ -57,7 +57,7 @@ const MainScreen = () => {
               break;
           }
 
-          return <Image source={iconName} style={style} />;
+          return (<Image source={iconName} style={style} />);
         },
         tabBarInactiveTintColor: "gray",
         tabBarActiveTintColor: "blue",
@@ -73,7 +73,7 @@ const MainScreen = () => {
         }}
         options={{ headerShown: false }}
       >
-        {() => <HomeScreen refresh={refresh} />}
+  {({ navigation }) => <HomeScreen navigation={navigation} refresh={refresh} />}
       </Tab.Screen>
       <Tab.Screen
         name="Diseases"
