@@ -42,7 +42,7 @@ export default function ProfileScreen({ route }) {
     const fetchUserData = async () => {
       try {
         const accessToken = await AsyncStorage.getItem("accessToken");
-        const response = await fetch("http://192.168.1.15:3000/dashboard", {
+        const response = await fetch("http://192.168.1.9:3000/dashboard", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -51,9 +51,9 @@ export default function ProfileScreen({ route }) {
         });
         if (response.ok) {
           const data = await response.json();
-          /*console.log(data);*/
           setUsernameText(data["username"]);
           setMailText(data["email"]);
+          setProfileImage(data["profilePicture"]);
         } else {
           console.error("Error fetching user data:", response.status);
         }
