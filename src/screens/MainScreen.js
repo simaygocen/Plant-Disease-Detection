@@ -61,7 +61,7 @@ const MainScreen = () => {
       />
       <Tab.Screen
         name="Diseases"
-        component={Profile} // Ensure this is correctly mapped to your Diagnose screen
+        component={HomeScreen} // Ensure this is correctly mapped to your Diagnose screen
         options={{ headerShown: false }}
       />
       <Tab.Screen

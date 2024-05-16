@@ -7,23 +7,37 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import COLORS from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../components/button";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordShown, setIsPasswordShown] = useState(false);
 
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      // Clear the input fields when the screen is focused
+      setUsername("");
+      setPassword("");
+    }
+  }, [isFocused]);
+
   const handleLogin = async () => {
+    if (!username || !password) {
+      Alert.alert("Error", "Please enter both username and password.");
+      return;
+    }
+
     try {
-      /*http://192.168.1.9:3000/login*/
-      const response = await fetch("http://192.168.1.7:3000/login", {
+      const response = await fetch("http://192.168.1.9:3000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,9 +46,9 @@ const LoginScreen = ({ navigation }) => {
       });
       const json = await response.json();
       const accessToken = json.access_token;
-      await AsyncStorage.setItem('accessToken', accessToken);
-      
+
       if (response.status === 200) {
+        await AsyncStorage.setItem("accessToken", accessToken);
         Alert.alert("Success", "Login successful", [
           {
             text: "OK",
@@ -42,7 +56,18 @@ const LoginScreen = ({ navigation }) => {
           },
         ]);
       } else {
-        Alert.alert("Error", json.message);
+        // Handle error messages
+        if (json.message === "Account does not exist") {
+          Alert.alert(
+            "Don't you have an account ? ",
+            "No account found with these credentials."
+          );
+        } else {
+          Alert.alert(
+            "Don't you have an account ?",
+            "We couldn't found account with these credentials."
+          );
+        }
       }
     } catch (error) {
       console.error("Failed to login:", error);
@@ -131,7 +156,7 @@ const LoginScreen = ({ navigation }) => {
                 right: 12,
               }}
             >
-              {isPasswordShown == true ? (
+              {isPasswordShown ? (
                 <Ionicons name="eye-off" size={24} color={COLORS.black} />
               ) : (
                 <Ionicons name="eye" size={24} color={COLORS.black} />
