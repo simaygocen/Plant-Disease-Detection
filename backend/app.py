@@ -8,7 +8,7 @@ from flask_jwt_extended import create_access_token,jwt_required,JWTManager,get_j
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://appuser:Uykusuz01@localhost/plantdisease'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/plantdisease'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Elif.1312@localhost/plantdisease'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 
@@ -152,8 +152,8 @@ app.add_url_rule('/predict', view_func=predict, methods=["POST"])
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-        app.run(host='192.168.1.9', port=3000, debug=True)
-        #app.run(host='192.168.1.7', port=3000, debug=True)
+        #app.run(host='192.168.1.9', port=3000, debug=True)
+        app.run(host='192.168.1.15', port=3000, debug=True)
 
 
 

@@ -4,8 +4,8 @@ from io import BytesIO
 import tensorflow as tf
 from flask import jsonify, request
 
-#MODEL = tf.keras.models.load_model("C:\\Users\\Monster\\Desktop\\ReactNativeApp\\model_96_55.h5")
-MODEL = tf.keras.models.load_model("C:\\Users\\elif_\\OneDrive\\Belgeler\\model_96_55.h5")
+MODEL = tf.keras.models.load_model("C:\\Users\\dilara\\OneDrive\\Belgeler\\bitirme\\PlantDisease\\ReactNativeApp\\model_96_55.h5")
+#MODEL = tf.keras.models.load_model("C:\\Users\\elif_\\OneDrive\\Belgeler\\model_96_55.h5")
 CLASS_NAMES = ['Black_Rot', 'Cedar_Rust', 'Healthy', 'Scab']
 
 def read_file_as_image(data) -> np.ndarray:

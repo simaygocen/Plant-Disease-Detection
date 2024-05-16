@@ -37,7 +37,8 @@ const LoginScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await fetch("http://192.168.1.9:3000/login", {
+      /*http://192.168.1.9:3000/login*/
+      const response = await fetch("http://192.168.1.15:3000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
