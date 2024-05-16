@@ -14,11 +14,16 @@ import { Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
-const App = () => {
+const App = ({navigation,refresh}) => {
   const [activeFilter, setActiveFilter] = useState("All");
   const [plantList, setPlantList] = useState([]);
+  const [errorMessage, setErrorMessage] = useState();
   const [filteredPlantList, setFilteredPlantList] = useState([]);
-  const navigation = useNavigation();
+  //const navigation = useNavigation();
+//const { refresh } = useContext(RefreshContext);
+useEffect(() => {
+  setErrorMessage(false)
+}, [refresh]);
 
   const fetchUserData = async () => {
     try {
@@ -42,7 +47,7 @@ const App = () => {
         const filteredPlants = filterPlantsByPrediction(activeFilter, plants);
         setFilteredPlantList(filteredPlants);
       } else {
-        console.error('Error fetching user data:', response.status);
+        setErrorMessage(true);
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -112,26 +117,31 @@ const App = () => {
           )}
         </ScrollView>
       </View>
-      <ScrollView style={styles.plantsContainer}>
-        {filteredPlantList.map((plant) => (
-          <TouchableOpacity
-            key={plant.id}
-            style={styles.plantItem}
-            onPress={() => navigateToSavedPredictionScreen(plant.id)}
-          >
-            {plant.images.map((image, index) => (
-              <Image
-                key={`${plant.name}_${index}`}
-                source={{ uri: image }}
-                style={styles.plantImage}
-              />
-            ))}
-            <Text style={styles.plantText}>{plant.name}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      {errorMessage ? (
+        <Text style={styles.errorText}>You don't have any saved plants.</Text>
+      ) : (
+        <ScrollView style={styles.plantsContainer}>
+          {filteredPlantList.map((plant) => (
+            <TouchableOpacity
+              key={plant.id}
+              style={styles.plantItem}
+              onPress={() => navigateToSavedPredictionScreen(plant.id)}
+            >
+              {plant.images.map((image, index) => (
+                <Image
+                  key={`${plant.name}_${index}`}
+                  source={{ uri: image }}
+                  style={styles.plantImage}
+                />
+              ))}
+              <Text style={styles.plantText}>{plant.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
+  
 };
 
 const styles = StyleSheet.create({
@@ -203,6 +213,12 @@ const styles = StyleSheet.create({
   },
   activeText: {
     color: "#ffffff",
+  },
+  errorText: {
+    fontSize: 15,
+    color: "black",
+    textAlign: "center",
+    marginTop: 220,
   },
 });
 

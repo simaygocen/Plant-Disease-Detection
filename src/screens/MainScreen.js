@@ -21,6 +21,12 @@ const MainScreen = () => {
     // Reset the state to simulate a screen refresh
     setRefresh((prev) => prev + 1);
   };
+  const handlePlantsPress = () => {
+    // This function will be called when the Home tab is pressed
+    // Reset the state to simulate a screen refresh
+    setRefresh((prev) => prev + 1);
+  };
+
 
   return (
     <Tab.Navigator
@@ -73,7 +79,7 @@ const MainScreen = () => {
         }}
         options={{ headerShown: false }}
       >
-  {({ navigation }) => <HomeScreen navigation={navigation} refresh={refresh} />}
+        {({ navigation }) => <HomeScreen navigation={navigation} refresh={refresh} />}
       </Tab.Screen>
       <Tab.Screen
         name="Diseases"
@@ -82,9 +88,12 @@ const MainScreen = () => {
       />
       <Tab.Screen
         name="My Plants"
-        component={PlantsScreen}
+        listeners={{
+          tabPress: handlePlantsPress, // Call handleHomePress on tab press
+        }}
         options={{ headerShown: false }}
-      />
+      >{({ navigation }) => <PlantsScreen navigation={navigation} refresh={refresh} />}</Tab.Screen>
+      
       <Tab.Screen
         name="Predict"
         component={PredictScreen} // Add the component for the Predict screen

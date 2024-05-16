@@ -62,7 +62,7 @@ export default function ProfileScreen({ route }) {
   const handleSave = async () => {
     try {
       const accessToken = await AsyncStorage.getItem("accessToken");
-      const response = await fetch("http://192.168.1.9:3000/edit", {
+      const response = await fetch("http://192.168.1.7:3000/edit", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -108,7 +108,7 @@ export default function ProfileScreen({ route }) {
             try {
               const accessToken = await AsyncStorage.getItem("accessToken");
               const response = await fetch(
-                "http://192.168.1.9:3000/delete_account",
+                "http://192.168.1.7:3000/delete_account",
                 {
                   method: "GET",
                   headers: {

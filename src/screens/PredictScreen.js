@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useCallback } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {  useFocusEffect } from "@react-navigation/native";
 
 
 export default function PredictScreen({ route }) {
@@ -39,6 +40,12 @@ export default function PredictScreen({ route }) {
       );
     }
   }, [prediction]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setInputText("My Plant");
+    }, [prediction])
+  );
 
   useEffect(() => {
     setInputText("My Plant");

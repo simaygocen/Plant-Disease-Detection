@@ -7,7 +7,7 @@ from flask_jwt_extended import create_access_token,jwt_required,JWTManager,get_j
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://appuser:Uykusuz01@localhost/plantdisease'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://appuser:Uykusuz01@localhost/plantdisease'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Elif.1312@localhost/plantdisease'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://appuser:Uykusuz01@localhost/plantdisease'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Elif.1312@localhost/plantdisease'
