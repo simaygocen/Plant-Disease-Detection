@@ -39,13 +39,15 @@ export default function PredictScreen({ route }) {
     }
   }, [prediction]);
 
+  useEffect(() => {
+    setInputText("My Plant");
+  }, [prediction]); // prediction değiştiğinde tetiklenir
+
   const handleSave = async () => {
     try {
       /*http://192.168.1.9:3000/saveprediction*/
       const accessToken = await AsyncStorage.getItem("accessToken");
-      const response = await fetch("http://192.168.1.9:3000/saveprediction", {
-      const accessToken = await AsyncStorage.getItem('accessToken');
-      const response = await fetch("http://192.168.1.15:3000/saveprediction", {
+      const response = await fetch("http://192.168.1.7:3000/saveprediction", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
